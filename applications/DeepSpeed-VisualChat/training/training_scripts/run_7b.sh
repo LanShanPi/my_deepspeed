@@ -40,6 +40,7 @@ fi
 mkdir -p $OUTPUT
 mkdir -p ./log/$OUTPUT_Dir/
 
+
 # we assume the batch size is 128, which means Num_GPU * per_device_train_batch_size * gradient_accumulation_steps
 deepspeed --include="localhost:1,3" main.py --max_seq_len 4096 \
     --offload True \

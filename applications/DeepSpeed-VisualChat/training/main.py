@@ -251,14 +251,17 @@ def main():
                                     stage=args.zero_stage)
     ds_config[
         'train_micro_batch_size_per_gpu'] = args.per_device_train_batch_size
+    
+    # torch.distributed.get_world_size() 主要用于在分布式训练环境中获取所有进程的数量。
     ds_config[
         'train_batch_size'] = args.per_device_train_batch_size * torch.distributed.get_world_size(
         ) * args.gradient_accumulation_steps
 
     # If passed along, set the training seed now.
     set_random_seed(args.seed)
-
+    # torch.distributed.barrier() 是 PyTorch 中用于分布式训练的同步操作函数，它确保所有进程在某个点上都达到同步状态，之后才继续执行
     torch.distributed.barrier()
+    # 加载分词器，fast_tokenizer是否使用更快的分词器
     tokenizer = AutoTokenizer.from_pretrained(args.lm_model_name_or_path,
                                               fast_tokenizer=True)
     # 这会影响到当序列的长度不同时，填充（padding）是在序列的右侧添加
