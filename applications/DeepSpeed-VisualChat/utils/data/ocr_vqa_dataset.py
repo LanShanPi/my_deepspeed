@@ -12,6 +12,7 @@ from .vqa_dataset import VQADataset
 from utils.utils import print_rank_0, is_rank_0, get_rank
 from .utils import save_debug_image, save_debug_text
 
+
 class OCRVQADataset(VQADataset):
     def __init__(self, data_path, data_debug_path, per_sample_image, tokenizer, vis_processor,
                  add_eos=True, ignore_instruction=True, **kwargs):
