@@ -1,4 +1,4 @@
-name: mul_model
+name: deepspeed_env
 channels:
   - defaults
 dependencies:
