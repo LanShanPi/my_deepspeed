@@ -4,10 +4,13 @@
 
 # DeepSpeed Team
 
-VISION_MODEL=/home/kuaipan/model/deepspeed_model/clip-vit-large-patch14
+
+VISION_MODEL=/home/test02/model_domain/deepspeed_model/clip-vit-large-patch14
+LLM=/home/test02/model_domain/deepspeed_model/Llama-2-7b
+
+
 # VISION_MODEL=/home/kuaipan/model/florence/Florence-2-large
-# LLM=/home/kuaipan/model/deepspeed_model/Llama-2-7b
-LLM=/home/kuaipan/model/qwen/Qwen1___5-14B-Chat-AWQ
+# LLM=/home/kuaipan/model/qwen/Qwen1___5-14B-Chat-AWQ
 
 
 
@@ -15,8 +18,9 @@ EPOCH=6
 ZERO_STAGE=3
 lr=1e-3
 
-DATA_PATH=./data
-DATA="llava llava_dial otter_mimicit_cgd otter_mimicit_sd otter_mimicit_sn otter_mimicit_tvc otter_mimicit_vst llava_otter_blend sparkles_dialogue"
+DATA_PATH=/home/test02/data_domain/deepspeed_data/
+# DATA="llava llava_dial otter_mimicit_cgd otter_mimicit_sd otter_mimicit_sn otter_mimicit_tvc otter_mimicit_vst llava_otter_blend sparkles_dialogue"
+DATA="ocr_vqa"
 DATA_SAMPLE="all"
 IMAGE_PER_SAMPLE="3 2 1 1 1 1 1 1 1"
 
@@ -42,7 +46,7 @@ mkdir -p ./log/$OUTPUT_Dir/
 
 
 # we assume the batch size is 128, which means Num_GPU * per_device_train_batch_size * gradient_accumulation_steps
-deepspeed --include="localhost:1,3" main.py --max_seq_len 4096 \
+deepspeed --include="localhost:0,1,2,3,4,5,6,7" main.py --max_seq_len 4096 \
     --offload True \
     --data_path ${DATA_PATH} \
     --dataset_names ${DATA} --dataset_samples ${DATA_SAMPLE} --dataset_concatenate_samples ${IMAGE_PER_SAMPLE} --max_num_image_per_sample 8 \

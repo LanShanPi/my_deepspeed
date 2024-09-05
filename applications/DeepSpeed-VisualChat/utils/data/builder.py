@@ -10,6 +10,7 @@ from .dial_dataset import DialDataset  # noqa: F401
 from .llava_dataset import LlavaDataset  # noqa: F401
 from .llava_otter_blend_dataset import LlavaOtterBlendDataset  # noqa: F401
 from .ocr_vqa_dataset import OCRVQADataset  # noqa: F401
+from .my_ocr_dataset import MyOCRVQADataset
 from .otter_mimicit_cgd_dataset import OtterMimicitCgdDataset  # noqa: F401
 from .otter_mimicit_sd_dataset import OtterMimicitSdDataset  # noqa: F401
 from .otter_mimicit_sn_dataset import OtterMimicitSnDataset  # noqa: F401
@@ -76,6 +77,13 @@ def build_dataset(data_path, data_debug_path, dataset_name, dataset_sample,
         )
     elif dataset_name == "ocr_vqa":
         dataset = OCRVQADataset(
+            data_path,
+            data_debug_path,
+            dataset_concatenate_samples,
+            **kwargs,
+        )
+    elif dataset_name == "my_ocr":
+        dataset = MyOCRVQADataset(
             data_path,
             data_debug_path,
             dataset_concatenate_samples,
