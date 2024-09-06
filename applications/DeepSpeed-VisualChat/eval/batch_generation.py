@@ -9,6 +9,9 @@ import csv
 import sys
 from PIL import Image
 
+import time
+from datetime import datetime
+
 import torch
 import deepspeed
 sys.path.append(
@@ -79,7 +82,7 @@ def parse_args():
     )
     parser.add_argument('--checkpoint_names',
                         nargs='*',
-                        default=['runing_check_stage2_v3_epoch10',],
+                        default=['epoch-2',],
                         help='Path to the training dataset. Accepted format:'
                         '1) a single data path, 2) multiple datasets in the'
                         'form: dataset1-path dataset2-path ...')
@@ -144,6 +147,10 @@ def main():
         args=args,
     )
     get_results = collections.defaultdict(list)
+    print("***********************************************")
+    start_time = datetime.now()
+    print(f"开始推理时间为：{start_time.strftime('%Y-%m-%d %H:%M:%S')}")
+    print("***********************************************")
     for ck_name in args.checkpoint_names:
         ck_path = os.path.join(args.checkpoint_path, ck_name)
         print (ck_path)
@@ -211,7 +218,12 @@ def main():
                     extend_ids.pop(0)
                 system_instruct = system_instruct + full_prompt_ids + extend_ids # entire input as system instruction for simplicity
                 system_instruct = system_instruct + [tokenizer.eos_token_id] # add eos token
-                
+    print("***********************************************")
+    end_time = datetime.now()
+    print(f"结束推理时间为：{end_time.strftime('%Y-%m-%d %H:%M:%S')}")
+    training_time = end_time - start_time
+    print(f"总推理时间为：{training_time}")
+    print("***********************************************")
     with open(f'{args.output_filename}.csv', mode='w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
         writer.writerow(['test_name', 'image_path', 'question', 'answer'])
