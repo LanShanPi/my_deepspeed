@@ -13,6 +13,10 @@ import sys
 import numpy as np
 import random 
 
+import time
+from datetime import datetime
+
+
 import torch
 from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
@@ -398,6 +402,10 @@ def main():
         best_loss = 1e6
 
     print_rank_0("***** Running training *****", args.global_rank)
+    print("***********************************************")
+    start_time = datetime.now()
+    print(f"开始训练时间为：{start_time.strftime('%Y-%m-%d %H:%M:%S')}")
+    print("***********************************************")
     for epoch in range(start_epoch, args.num_train_epochs):
         print_rank_0(
             f"Beginning of Epoch {epoch+1}/{args.num_train_epochs}, Total Micro Batches {len(train_dataloader)}",
@@ -455,6 +463,12 @@ def main():
         }
         model.save_checkpoint(args.output_dir, client_state=client_state) # save to the latest
 
+    print("***********************************************")
+    end_time = datetime.now()
+    print(f"结束训练时间为：{end_time.strftime('%Y-%m-%d %H:%M:%S')}")
+    training_time = end_time - start_time
+    print(f"总训练时间为：{training_time}")
+    print("***********************************************")
 
 if __name__ == "__main__":
     main()

@@ -34,7 +34,11 @@ class OCRVQADataset(VQADataset):
                     ext=os.path.splitext(raw_annotation[k]['imageURL'])[1]
                     outputFile = '%s%s'%(k,ext)
                     image_path = os.path.join(self.vis_root, outputFile)
-                    image = Image.open(image_path).convert("RGB")
+                    try:
+                        image = Image.open(image_path).convert("RGB")
+                    except:
+                        print("************************************")
+                        print(image_path)
                     if image.size[0] > 1 and image.size[1] > 1:
                         raw_annotation[k]["filename"] = outputFile
                     else:
