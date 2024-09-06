@@ -370,6 +370,7 @@ def main():
     def evaluation(model, eval_dataloader):
         model.eval()
         acc_loss = 0
+        step_copy = [1]
         for step, batch in enumerate(eval_dataloader):
             with torch.no_grad():
                 batch = to_device(batch, device)
@@ -381,9 +382,12 @@ def main():
                     image_num=batch["image_num"],
                 )[0]
             acc_loss += loss
+            step_copy[0] = step
         model.train()
+        # 将acc_loss转换成张量，否则会报错
+        acc_loss = torch.tensor([acc_loss])
         acc_loss = get_all_reduce_mean(acc_loss).item()
-        ave_loss = acc_loss / (step + 1)
+        ave_loss = acc_loss / (step_copy[0] + 1)
         print_rank_0(f"the eval average_loss: {ave_loss}", args.global_rank)
         return ave_loss
     
@@ -400,6 +404,7 @@ def main():
             args.global_rank)
         model.train()
         acc_loss = 0
+        step_copy = [1]
         for step, batch in enumerate(train_dataloader):
             batch = to_device(batch, device)  #torch.size(1, 3, 224, 224]) #torch.Size([1, 1, 3, 224, 224])
             images = batch["image"].half() 
@@ -416,9 +421,12 @@ def main():
             acc_loss += loss.detach().clone()
             model.backward(loss)
             model.step()
+            step_copy[0] = step
         model.tput_timer.update_epoch_count()
+        # 将acc_loss转换成张量，否则会报错
+        acc_loss = torch.tensor([acc_loss])
         acc_loss = get_all_reduce_mean(acc_loss).item()
-        print_rank_0(f"Epoch {epoch+1}, the average_loss: {acc_loss/step}", args.global_rank)
+        print_rank_0(f"Epoch {epoch+1}, the average_loss: {acc_loss/step_copy[0]}", args.global_rank)
         eval_loss = evaluation(model, eval_dataloader)
 
         

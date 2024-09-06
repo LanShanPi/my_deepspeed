@@ -27,7 +27,7 @@ class OCRVQADataset(VQADataset):
             ann_path = f"{data_path}/{ann_paths[idx]}"
             real_ann_paths.append(ann_path)
             if not os.path.isfile(ann_path):
-                print_rank_0(f"OCRVQADataset annotation file {ann_path_raw} not found, starting an one-time preprocessing:")
+                print_rank_0(f"OCRVQADataset annotation file {ann_path} not found, starting an one-time preprocessing:")
                 raw_annotation = json.load(open(ann_path_raw, "r"))
                 raw_annotation_keys = list(raw_annotation.keys())
                 for k in tqdm(raw_annotation_keys):

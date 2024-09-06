@@ -5,8 +5,8 @@
 # DeepSpeed Team
 
 
-VISION_MODEL=/home/test02/model_domain/deepspeed_model/clip-vit-large-patch14
-LLM=/home/test02/model_domain/deepspeed_model/Llama-2-7b
+VISION_MODEL=/home/test02/model_domain/deepspeed_model/clip-vit-large-patch14/
+LLM=/home/test02/model_domain/deepspeed_model/Llama-2-7b-hf/
 
 
 # VISION_MODEL=/home/kuaipan/model/florence/Florence-2-large
@@ -18,7 +18,7 @@ EPOCH=6
 ZERO_STAGE=3
 lr=1e-3
 
-DATA_PATH=/home/test02/data_domain/deepspeed_data/
+DATA_PATH=/home/test02/data_domain/deepspeed_data
 # DATA="llava llava_dial otter_mimicit_cgd otter_mimicit_sd otter_mimicit_sn otter_mimicit_tvc otter_mimicit_vst llava_otter_blend sparkles_dialogue"
 DATA="ocr_vqa"
 DATA_SAMPLE="all"

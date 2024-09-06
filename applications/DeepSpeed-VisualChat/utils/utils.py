@@ -70,6 +70,8 @@ def set_random_seed(seed):
 
 
 def get_all_reduce_mean(tensor):
+    # 要加上此句，给他放到gpu上去处理，否则会出现：RuntimeError: No backend type associated with device type cpu
+    tensor = tensor.to('cuda')
     torch.distributed.all_reduce(tensor, op=torch.distributed.ReduceOp.SUM)
     tensor = tensor / torch.distributed.get_world_size()
     return tensor

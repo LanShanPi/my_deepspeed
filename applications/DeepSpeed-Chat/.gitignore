@@ -135,3 +135,7 @@ outputs/
 .test_output
 *.hdf5
 *.h5
+
+
+# 去除训练好的模型
+/home/test02/my_deepspeed/applications/DeepSpeed-VisualChat/training/output/
