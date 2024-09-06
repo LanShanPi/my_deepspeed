@@ -164,6 +164,7 @@ def main():
         model.vis_encoder = model.vis_encoder.to('cuda')
         model = model.half()
         print_rank_0(model)
+        i = 0
         for name in data.keys():
             question_image_list = data[name]
             print (f'{args.eval_data}-------------------------------------{name}')
@@ -173,6 +174,7 @@ def main():
             image_token_dict = DST.get_image_num_map(tokenizer)
             image_num = 0
             for round, q_i_pair in enumerate(question_image_list):
+                i+=1
                 # print(f'=========round {round+1}==============')
                 question = q_i_pair[0]
                 if len(q_i_pair) > 1:
@@ -219,6 +221,7 @@ def main():
                 system_instruct = system_instruct + full_prompt_ids + extend_ids # entire input as system instruction for simplicity
                 system_instruct = system_instruct + [tokenizer.eos_token_id] # add eos token
     print("***********************************************")
+    print(f"推理次数为：{i}")
     end_time = datetime.now()
     print(f"结束推理时间为：{end_time.strftime('%Y-%m-%d %H:%M:%S')}")
     training_time = end_time - start_time
