@@ -17,7 +17,7 @@ do
     for CKPT_NAME in epoch-2
     do
     #NOTE: to run multi-GPU, you simple do "export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7;"
-    export CUDA_VISIBLE_DEVICES=0; python eval/batch_generation.py --model_name dsvl --vis_proj baseline --max_seq_len 4096 \
+    export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7; python eval/batch_generation.py --model_name dsvl --vis_proj baseline --max_seq_len 4096 \
         --lm_model_name_or_path  ${LLM} --vision_model_name_or_path ${VISION_MODEL} \
         --checkpoint_path $MAIN_PATH  --checkpoint_names $CKPT_NAME --eval_data ${EVAL_DATSET} \
         --enable_mmca_attention --output_filename ${SAVE_PATH}/ours_${CKPT_NAME} &> ${SAVE_PATH}/ours_${CKPT_NAME}.log

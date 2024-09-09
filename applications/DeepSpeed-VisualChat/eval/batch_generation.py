@@ -215,7 +215,7 @@ def main():
                 extend_ids = generate_output[0].cpu().tolist()[0]
                 while extend_ids[-1] == tokenizer.pad_token_id:
                     extend_ids.pop()
-                while extend_ids[0] == tokenizer.bos_token_id:
+                while extend_ids and extend_ids[0] == tokenizer.bos_token_id:
                     # llama-2 generates bos token at the beginning
                     extend_ids.pop(0)
                 system_instruct = system_instruct + full_prompt_ids + extend_ids # entire input as system instruction for simplicity
