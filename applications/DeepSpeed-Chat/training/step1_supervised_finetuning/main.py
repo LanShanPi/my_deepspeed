@@ -240,9 +240,10 @@ def main():
                                   fast_tokenizer=True,
                                   add_special_tokens=additional_special_tokens)
 
-    model = create_hf_model(AutoModelForCausalLM,
+    model = create_hf_model(
                             args.model_name_or_path,
                             tokenizer,
+                            AutoModelForCausalLM,
                             ds_config,
                             dropout=args.dropout)
 

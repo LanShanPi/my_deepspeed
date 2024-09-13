@@ -82,6 +82,15 @@ def get_tokenizer(model_name_or_path, fast_tokenizer=True):
             # tokenizer.add_special_tokens({'pad_token': tokenizer.eos_token})
             tokenizer.add_special_tokens({'pad_token': '[PAD]'})
             tokenizer.padding_side = 'right'
+    elif "flan" in model_name_or_path:
+        from transformers import T5Tokenizer
+        # 针对 谷歌flan-T5-XXX系列模型
+        tokenizer = T5Tokenizer.from_pretrained(model_name_or_path, fast_tokenizer=fast_tokenizer)
+        # 如果 pad_token 没有自动设置，手动添加，一般T5模型会默认设置
+        if tokenizer.pad_token is None:
+            tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+        # 默认是右填充，可以手动确认
+        tokenizer.padding_side = 'right'
     else:
         tokenizer = AutoTokenizer.from_pretrained(
             model_name_or_path, fast_tokenizer=fast_tokenizer)

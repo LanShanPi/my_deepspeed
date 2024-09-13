@@ -8,6 +8,7 @@ import torch
 from transformers import (
     AutoConfig,
     AutoModel,
+    AutoModelForCausalLM,
 )
 from huggingface_hub import snapshot_download
 from transformers.deepspeed import HfDeepSpeedConfig
@@ -82,9 +83,10 @@ def causal_lm_model_to_fp32_loss(model):
     model.forward = causal_lm_forward
 
 
-def create_hf_model(model_class,
+def create_hf_model(
                     model_name_or_path,
                     tokenizer,
+                    model_class=AutoModelForCausalLM,
                     ds_config=None,
                     rlhf_training=False,
                     dropout=None):
@@ -98,19 +100,24 @@ def create_hf_model(model_class,
     else:
         dschf = None
     if rlhf_training:
+        # 如果是rlhf训练，使用config初始化模型
         # the weight loading is handled by create critic model
         model = model_class.from_config(model_config)
     else:
+        if "flan" in model_name_or_path:
+            # 针对flan-t5-XXX系列模型
+            from transformers import T5ForConditionalGeneration
+            model_class = T5ForConditionalGeneration
         model = model_class.from_pretrained(
             model_name_or_path,
             from_tf=bool(".ckpt" in model_name_or_path),
             config=model_config)
 
+    # 配置模型的特殊token
     model.config.end_token_id = tokenizer.eos_token_id
     model.config.pad_token_id = model.config.eos_token_id
-    model.resize_token_embeddings(int(
-        8 *
-        math.ceil(len(tokenizer) / 8.0)))  # make the vocab size multiple of 8
+    # 配置词表大小为8的倍数，优化 GPU 计算
+    model.resize_token_embeddings(int(8 * math.ceil(len(tokenizer) / 8.0)))  # make the vocab size multiple of 8
 
     return model
 
