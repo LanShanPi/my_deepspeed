@@ -11,13 +11,17 @@ import re
 # The template prompt dataset class that all new dataset porting needs to
 # follow in order to have a unified API and unified data format.
 class PromptRawDataset(object):
-
-    def __init__(self, output_path, seed, local_rank, dataset_name):
+    def __init__(self, output_path, seed, local_rank, dataset_name,my_data=True):
         self.output_path = output_path
         self.seed = seed
         self.local_rank = local_rank
         if os.path.exists(dataset_name):
-            self.raw_datasets = load_from_disk(dataset_name)
+            if my_data:
+                #############还需要再修改##################
+                # 加载本地数据
+                self.raw_datasets = load_dataset('json', data_files=dataset_name)
+            else:
+                self.raw_datasets = load_from_disk(dataset_name)
         elif not dataset_name == 'local/jsonfile':
             self.raw_datasets = load_dataset(dataset_name)
 
@@ -46,6 +50,69 @@ class PromptRawDataset(object):
     def get_prompt_and_rejected(self, sample):
         return
 
+
+class MyMtlDataset(PromptRawDataset):
+    def __init__(self, output_path, seed, local_rank, dataset_name):
+        super().__init__(output_path, seed, local_rank, dataset_name)
+        self.dataset_name = "my_mtl"
+        self.dataset_name_clean = "my_mtl"
+
+    def get_train_data(self):
+        from .data_utils import get_raw_dataset_split_index
+        dataset = self.raw_datasets["train"]
+        index = get_raw_dataset_split_index(self.local_rank, self.output_path,
+                                            self.dataset_name_clean,
+                                            self.seed, "train_eval", "9,1", 0,
+                                            len(dataset))
+        dataset = Subset(dataset, index)
+        return dataset
+
+    def get_eval_data(self):
+        from .data_utils import get_raw_dataset_split_index
+        dataset = self.raw_datasets["train"]
+        index = get_raw_dataset_split_index(self.local_rank, self.output_path,
+                                            self.dataset_name_clean,
+                                            self.seed, "train_eval", "9,1", 1,
+                                            len(dataset))
+        dataset = Subset(dataset, index)
+        return dataset
+
+    def get_prompt(self, sample):
+        # if sample['queries']['zh_cn'] is not None:
+        #     return " Human: " + sample['queries']['zh_cn'] + " Assistant:"
+        # 进行联合多任务训练，将多个任务联合输入
+        task_instruction = "你是一个文本纠正助手。你的主要任务是根据输入文本，先预测文本的二级分类和三级分类，并利用这些分类信息来帮助你准确地矫正文本。请确保分类任务的准确性，并在此基础上对文本进行合适的纠正。"
+        input_text = f"Human:\n{task_instruction}\n输入文本：{sample['wrong_sentence']}\nAssistant:"
+        return input_text
+
+    def get_chosen(self, sample):
+        # if sample['answers']['zh_cn'][0]['text'] is not None:
+        #     return " " + sample['answers']['zh_cn'][0]['text']
+        target_text = f"错误类型二级分类: {sample['wrong_type1']} 错误类型三级分类: {sample['wrong_type2']} 矫正文本: {sample['correct_sentence']}"
+        return target_text
+
+    def get_rejected(self, sample):
+        print(
+            f"Warning: dataset {self.dataset_name} does not include rejected response."
+        )
+        return None
+
+    def get_prompt_and_chosen(self, sample):
+        # if sample['queries']['zh_cn'] is not None and sample['answers'][
+        #         'zh_cn'][0]['text'] is not None:
+        #     return " Human: " + sample['queries'][
+        #         'zh_cn'] + " Assistant: " + sample['answers']['zh_cn'][0][
+        #             'text']
+        task_instruction = "你是一个文本纠正助手。你的主要任务是根据输入文本，先预测文本的二级分类和三级分类，并利用这些分类信息来帮助你准确地矫正文本。请确保分类任务的准确性，并在此基础上对文本进行合适的纠正。"
+        input_text = f"Human:\n{task_instruction}\n输入文本：{sample['wrong_sentence']}\nAssistant:\n"
+        target_text = f"错误类型二级分类: {sample['wrong_type1']} 错误类型三级分类: {sample['wrong_type2']} 矫正文本: {sample['correct_sentence']}"
+        return input_text+target_text
+
+    def get_prompt_and_rejected(self, sample):
+        print(
+            f"Warning: dataset {self.dataset_name} does not include rejected response."
+        )
+        return None
 
 # English dataset
 class DahoasRmstaticDataset(PromptRawDataset):

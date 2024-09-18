@@ -254,6 +254,7 @@ def main():
         causal_lm_model_to_fp32_loss(model)
 
     if args.lora_dim > 0:
+        # 多任务使用lora效果可能不好，所以设置lora_dim为0，不启用lora
         model = convert_linear_layer_to_lora(model, args.lora_module_name,
                                              args.lora_dim)
         if args.only_optimize_lora:

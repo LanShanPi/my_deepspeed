@@ -19,8 +19,10 @@ from deepspeed.accelerator import get_accelerator
 
 
 def get_raw_dataset(dataset_name, output_path, seed, local_rank):
-
-    if "Dahoas/rm-static" in dataset_name:
+    if "my_mtl" in dataset_name:
+        return raw_datasets.MyMtlDataset(output_path, seed,
+                                                  local_rank, dataset_name,my_data=True)
+    elif "Dahoas/rm-static" in dataset_name:
         return raw_datasets.DahoasRmstaticDataset(output_path, seed,
                                                   local_rank, dataset_name)
     elif "Dahoas/full-hh-rlhf" in dataset_name:
@@ -83,6 +85,7 @@ def get_raw_dataset(dataset_name, output_path, seed, local_rank):
 
 
 def get_shuffle_idx(seed, size):
+    # 随机打乱
     np_rng = np.random.RandomState(seed=seed)
     dtype_ = np.uint32
     if size >= (np.iinfo(np.uint32).max - 1):
