@@ -19,7 +19,8 @@ class PromptRawDataset(object):
             if my_data:
                 #############还需要再修改##################
                 # 加载本地数据
-                self.raw_datasets = load_dataset('json', data_files=dataset_name)
+                data_path = "/home/share/shucshqyfzyxgsi/home/lishuguang/my_deepspeed/data/ds_chat/sft_data/data.jsonl"
+                self.raw_datasets = load_dataset('json', data_files=data_path)
             else:
                 self.raw_datasets = load_from_disk(dataset_name)
         elif not dataset_name == 'local/jsonfile':

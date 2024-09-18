@@ -3,7 +3,7 @@ import json
 import os
 
 # 指定文件夹路径
-folder_path = "/home/kuaipan/my_deepspeed/data/ds_chat/sft_data/"
+folder_path = "/home/share/shucshqyfzyxgsi/home/lishuguang/my_deepspeed/data/ds_chat/sft_data/"
 # 获取文件夹下的所有文件名
 file_names = os.listdir(folder_path)
 
