@@ -249,6 +249,7 @@ def main():
         # Initializes the distributed backend which will take care of sychronizing nodes/GPUs
         deepspeed.init_distributed()
 
+
     args.global_rank = torch.distributed.get_rank()
 
     ds_config = get_train_ds_config(args, offload=args.offload,

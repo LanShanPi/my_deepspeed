@@ -5,6 +5,9 @@
 # DeepSpeed Team
 import argparse
 import math
+import os
+# 多卡训练时防止卡住
+os.environ['NCCL_P2P_LEVEL'] = 'NVL'
 
 import torch
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
@@ -21,6 +24,8 @@ import deepspeed
 from deepspeed.ops.adam import DeepSpeedCPUAdam, FusedAdam
 from deepspeed import get_accelerator
 
+import sys
+sys.path.append(r"/home/share/shucshqyfzyxgsi/home/lishuguang/my_deepspeed/applications/DeepSpeed-Chat/")
 from dschat.utils.data.data_utils import create_prompt_dataset
 from dschat.utils.utils import print_rank_0, to_device, save_hf_format, set_random_seed, get_all_reduce_mean, get_optimizer_grouped_parameters, save_zero_three_model, load_hf_tokenizer
 from dschat.utils.ds_utils import get_train_ds_config

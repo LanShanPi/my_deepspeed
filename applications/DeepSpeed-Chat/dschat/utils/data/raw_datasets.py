@@ -15,7 +15,7 @@ class PromptRawDataset(object):
         self.output_path = output_path
         self.seed = seed
         self.local_rank = local_rank
-        if os.path.exists(dataset_name):
+        if os.path.exists(dataset_name) or dataset_name == "my_mtl":
             if my_data:
                 #############还需要再修改##################
                 # 加载本地数据
@@ -53,8 +53,8 @@ class PromptRawDataset(object):
 
 
 class MyMtlDataset(PromptRawDataset):
-    def __init__(self, output_path, seed, local_rank, dataset_name):
-        super().__init__(output_path, seed, local_rank, dataset_name)
+    def __init__(self, output_path, seed, local_rank, dataset_name,my_data):
+        super().__init__(output_path, seed, local_rank, dataset_name,my_data)
         self.dataset_name = "my_mtl"
         self.dataset_name_clean = "my_mtl"
 
