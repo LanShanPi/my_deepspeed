@@ -123,8 +123,8 @@ class PromptRawDataset(object):
 
 class MyMtlDataset(PromptRawDataset):
     def __init__(self,):
-        self.dataset_name = "/home/kuaipan/my_deepspeed/data/ds_chat/sft_data/data.jsonl"
-        self.dataset_name_clean = "/home/kuaipan/my_deepspeed/data/ds_chat/sft_data/data.jsonl"
+        self.dataset_name = "/home/share/shucshqyfzyxgsi/home/lishuguang/my_deepspeed/data/ds_chat/sft_data/data.jsonl"
+        self.dataset_name_clean = "/home/share/shucshqyfzyxgsi/home/lishuguang/my_deepspeed/data/ds_chat/sft_data/data.jsonl"
         self.raw_datasets = load_dataset('json', data_files=self.dataset_name)
     def get_train_data(self):
         dataset = self.raw_datasets["train"]
