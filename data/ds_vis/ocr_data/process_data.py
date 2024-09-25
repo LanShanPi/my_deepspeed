@@ -1,4 +1,5 @@
 import os
+import json
 
 # 指定要读取的文件夹路径
 folder_path = '/root/my_deepspeed/data/ds_vis/ocr_data/images'
@@ -6,7 +7,7 @@ folder_path = '/root/my_deepspeed/data/ds_vis/ocr_data/images'
 # 获取文件夹中所有文件的名字
 file_names = os.listdir(folder_path)
 
-import json
+
 
 # 指定 JSON 文件的路径
 dataset_path = '/root/my_deepspeed/data/ds_vis/ocr_data/dataset.json'
