@@ -25,13 +25,14 @@ if download == 1:
     os.mkdir('./images')
     i = 0
     for k in data.keys():
-        if i<=10000:
+        if i<=10021:
             try:
                 ext=os.path.splitext(data[k]['imageURL'])[1]
                 outputFile='images/%s%s'%(k,ext)
                 # pdb.set_trace()
                 ureq.urlretrieve(data[k]['imageURL'],outputFile)
                 i+=1
+                print(i)
             except:
                 continue    
 
